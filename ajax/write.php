@@ -1,6 +1,8 @@
 <?php
 require_once 'globals.php';
 
+assert_basic_auth();
+
 if (!$dbh) {
     $res['status'] = 'error';
     $res['error'] = 'Connecting to database failed';
@@ -44,8 +46,10 @@ if ($rows) {
         ' `length` = :length,' .
         ' `salt` = :salt,' .
         ' `cDate` = :cDate,' .
-        ' `mDate` = :mDate';
+        ' `mDate` = :mDate' .
+        ' WHERE `name` = :name';
 	$sth = $dbh->prepare($sql);
+    $sth->bindParam(':name', $domain['domain']);
     $sth->bindParam(':username', $domain['username']);
     $sth->bindParam(':useLowerCase', $domain['useLowerCase']);
     $sth->bindParam(':useUpperCase', $domain['useUpperCase']);

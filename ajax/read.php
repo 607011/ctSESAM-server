@@ -1,6 +1,8 @@
 <?php
 require_once 'globals.php';
 
+assert_basic_auth();
+
 if (!$dbh) {
     $res['status'] = 'error';
     $res['error'] = 'Connecting to database failed';
