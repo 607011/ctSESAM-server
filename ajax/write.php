@@ -90,9 +90,8 @@ if ($rows) {
     	$res['error'] = $e->getMessage();
     	$res['data'] = $data;
     }
-    $res['$result'] = $result;
+    $res['result'] = $result;
     $res['rowcount'] = $sth->rowCount();
-    $res['sql'] = $sql;
 }
 else {
 	$sql = 'INSERT INTO `domains` ' .
@@ -135,9 +134,8 @@ else {
     	$res['error'] = $e->getMessage();
     	$res['data'] = $domain;
     }
-    $res['$result'] = $result;
+    $res['result'] = $result;
     $res['rowcount'] = $sth->rowCount();
-    $res['sql'] = $sql;
 }
 
 
