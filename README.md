@@ -24,7 +24,7 @@ The server extracts _username_ from the header and uses it to reference the tabl
 
 The server responds with JSON encoded data. 
 
-The data set for a single database contains fields with exactly the same names as in the database, e.g.:
+When applicable, i.e. when the server is requested to respond with single or multiple data sets, a single data set for a single database contains fields with exactly the same names as in the database, e.g.:
 
 ```
 {
@@ -35,6 +35,16 @@ The data set for a single database contains fields with exactly the same names a
 }
 ```
 
+Multiple data sets are sent as an array of data sets:
+
+```
+[
+  { <data set 1> },
+  { <data set 2> },
+  { <data set 3> },
+  ...
+]
+```
 
 ### Reading all data for a certain user
 
