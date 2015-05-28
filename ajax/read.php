@@ -28,14 +28,16 @@ if (!$dbh) {
     goto end;
 }
 
-if (!isset($_REQUEST['what']) || (isset($_REQUEST['what']) && $_REQUEST['what'] === 'all')) {
-	$sth = $dbh->prepare('SELECT * FROM `domains`');
+if (isset($_REQUEST['domain'])) {
+	$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid AND `domain` = :domain');
+	$sth->bindParam(':domain', $_REQUEST['domain']);
+	$sth->bindParam(':userid', $authenticated_user);
 	$result = $sth->execute();
 	$res['result'] = $sth->fetchAll(PDO::FETCH_ASSOC);
 }
-else if (isset($_REQUEST['what']) && $_REQUEST['what'] === 'single' && isset($_REQUEST['domain'])) {
-	$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `name` = :name');
-	$sth->bindParam(':name', $_REQUEST['domain']);
+else {
+	$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
+	$sth->bindParam(':userid', $authenticated_user);
 	$result = $sth->execute();
 	$res['result'] = $sth->fetchAll(PDO::FETCH_ASSOC);
 }

@@ -34,54 +34,24 @@ if (!isset($_REQUEST['data'])) {
     goto end;
 }
 
-$domain = $_REQUEST['data'];
-
-try {
-    $domain = json_decode($domain, true);
-}
-catch (Exception $e) {
-    $res['status'] = 'error';
-    $res['error'] = $e->getMessage();
-    goto end;
-}
+$domain = $_REQUEST['domain'];
+$data = $_REQUEST['data'];
 
 $res['domain'] = $domain;
 
-$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `name` = :name');
-$sth->bindParam(':name', $domain['domain']);
+$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid AND `domain` = :domain');
+$sth->bindParam(':domain', $domain);
+$sth->bindParam(':userid', $authenticated_user);
 $result = $sth->execute();
 $rows = $sth->fetch(PDO::FETCH_NUM);
 if ($rows) {
 	$sql = 'UPDATE `domains` SET' .
-        ' `username` = :username,' .
-        ' `useLowerCase` = :useLowerCase,' .
-        ' `useUpperCase` = :useUpperCase,' .
-        ' `useDigits` = :useDigits,' .
-        ' `useExtra` = :useExtra,' .
-        ' `useCustom` = :useCustom,' .
-        ' `avoidAmbiguous` = :avoidAmbiguous,' .
-        ' `customCharacters` = :customCharacters,' .
-        ' `iterations` = :iterations,' .
-        ' `length` = :length,' .
-        ' `salt` = :salt,' .
-        ' `cDate` = :cDate,' .
-        ' `mDate` = :mDate' .
-        ' WHERE `name` = :name';
+        ' `data` = :data,' .
+        ' WHERE `userid` = :userid AND `domain` = :domain';
 	$sth = $dbh->prepare($sql);
-    $sth->bindParam(':name', $domain['domain']);
-    $sth->bindParam(':username', $domain['username']);
-    $sth->bindParam(':useLowerCase', $domain['useLowerCase']);
-    $sth->bindParam(':useUpperCase', $domain['useUpperCase']);
-    $sth->bindParam(':useDigits', $domain['useDigits']);
-    $sth->bindParam(':useExtra', $domain['useExtra']);
-    $sth->bindParam(':useCustom', $domain['useCustom']);
-    $sth->bindParam(':avoidAmbiguous', $domain['avoidAmbiguous']);
-    $sth->bindParam(':customCharacters', $domain['customCharacters']);
-    $sth->bindParam(':iterations', $domain['iterations']);
-    $sth->bindParam(':length', $domain['length']);
-    $sth->bindParam(':salt', $domain['salt']);
-    $sth->bindParam(':cDate', $domain['cDate']);
-    $sth->bindParam(':mDate', $domain['mDate']);
+    $sth->bindParam(':domain', $domain);
+    $sth->bindParam(':userid', $authenticated_user]);
+    $sth->bindParam(':data', $data);
     try {
     	$result = $sth->execute();
     }
@@ -94,38 +64,11 @@ if ($rows) {
     $res['rowcount'] = $sth->rowCount();
 }
 else {
-	$sql = 'INSERT INTO `domains` ' .
-		' (name, username, useLowerCase, useUpperCase, useDigits, useExtra, useCustom, avoidAmbiguous, customCharacters, iterations, length, salt, cDate, mDate)' .
-		' VALUES(' .
-        ' :name,' .
-        ' :username,' .
-        ' :useLowerCase,' .
-        ' :useUpperCase,' .
-        ' :useDigits,' .
-        ' :useExtra,' .
-        ' :useCustom,' .
-        ' :avoidAmbiguous,' .
-        ' :customCharacters,' .
-        ' :iterations,' .
-        ' :length,' .
-        ' :salt,' .
-        ' :cDate,' .
-        ' :mDate)';
+	$sql = 'INSERT INTO `domains` (domain, userid, data) VALUES(:domain, :userid, :data)';
 	$sth = $dbh->prepare($sql);
-    $sth->bindParam(':name', $domain['domain']);
-    $sth->bindParam(':username', $domain['username']);
-    $sth->bindParam(':useLowerCase', $domain['useLowerCase']);
-    $sth->bindParam(':useUpperCase', $domain['useUpperCase']);
-    $sth->bindParam(':useDigits', $domain['useDigits']);
-    $sth->bindParam(':useExtra', $domain['useExtra']);
-    $sth->bindParam(':useCustom', $domain['useCustom']);
-    $sth->bindParam(':avoidAmbiguous', $domain['avoidAmbiguous']);
-    $sth->bindParam(':customCharacters', $domain['customCharacters']);
-    $sth->bindParam(':iterations', $domain['iterations']);
-    $sth->bindParam(':length', $domain['length']);
-    $sth->bindParam(':salt', $domain['salt']);
-    $sth->bindParam(':cDate', $domain['cDate']);
-    $sth->bindParam(':mDate', $domain['mDate']);
+    $sth->bindParam(':domain', $domain);
+    $sth->bindParam(':userid', $authenticated_user]);
+    $sth->bindParam(':data', $data);
     try {
     	$result = $sth->execute();
     }
@@ -141,7 +84,6 @@ else {
 
 end:
 if (isset($res['status']) && $res['status'] === 'error') {
-    // $dbh->exec('ROLLBACK');
     $res['inserted'] = 0;
 }
 
