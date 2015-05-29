@@ -6,7 +6,7 @@ _ctpwdgen-server_ is a data store for [ctpwdgen](https://github.com/ola-ct/ctpwd
 
 The web server **must** support PHP 5.x (or newer) with SQLite module activated.
 
-## Getting started
+## Getting Started
 
 Your personal instance of _ctpwdgen-server_ is easy to set up.
 
@@ -19,7 +19,7 @@ Your personal instance of _ctpwdgen-server_ is easy to set up.
 
 _ctpwdgen-server_ is now ready for action.
 
-## Data storage
+## Data Storage
 
 The SQLite 3 database contains a single table with the following layout:
 
@@ -41,7 +41,7 @@ The encoding process at a glance:
 raw data -------> JSON data ----------> encrypted data ------> base64 encoded data
 ```
 
-### Data specs
+### Data Specs
 
 Converting the raw data to the JSON object literal **must** lead to the following structure whereby `<string>`, `boolean` and so on describe the types of the actual values:
 
@@ -94,7 +94,9 @@ For encryption, the client **must** use AES in CBC mode (cipher block chaining) 
 
 The resulting cipher **must** then be base64 encoded. The reason for this lies in the network communication protocol for which all data has to be url encoded (see below). If the data already has been base64 encoded the data to be transferred is smaller than if binary data has to be url encoded.
 
-## Communication protocols
+## Communication Protocols
+
+### In General
 
 All data sent from the client to server **must** be sent via HTTP(S)-POST with MIME type "application/x-www-form-urlencoded". The request **must** contain a HTTP basic authorization header like `Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==` in which the last string portion resembles the base64 encoded concatenation of _username_:_password_.
 
@@ -124,7 +126,7 @@ Multiple data sets are sent as an array of data sets:
 ]
 ```
 
-### Reading all domain data for a certain user
+### Read All Domain Data
 
 Access ajax/read.php to read all user's data.
 
@@ -147,11 +149,9 @@ The reply contains an array of all domain data belonging to the user. The data i
 
 The `status` field contains "ok" if no errors occured. Otherwise it contains "error" and the field `error` contains a message describing the error.
 
-### Create/update domain data
+### Create/Update Domain Data
 
-Access ajax/write.php to create a new domain or update an existing one.
-
-This will modify the server's database.
+Access ajax/write.php to create a new domain or update an existing one. Only domains of the authenticated user will be affected by this call.
 
 The POST data **must** contain the following x-www-form-urlencoded fields:
 
@@ -160,7 +160,7 @@ Field  | Contents
 domain | the name of the domain to be created/updated
 data   | the data to be stored in the field `data`.
 
-If the server finds an entry for the given domain, it updates the stored data with the contents of `data`. If not, a new entry is created.
+If the server finds an entry for the given domain (and user), it updates the stored data with the contents of `data`. If not, a new entry is created.
 
 ### Delete domain data
 
@@ -172,4 +172,6 @@ Field  | Contents
 ------ | --------------------------------------------
 domain | the name of the domain to be deleted
 
-If the server finds an entry for the given domain, the entry is unrevocably deleted.
+If the server finds an entry for the given domain, the entry is irrevocably deleted. This only affects the entries belonging to the authenticated user.
+
+_Caveat!_ This function exists to administer the database. It is not supposed to be called by a regular client to actually delete an entry. Instead the client **should** mark a entry as deleted by setting the corresponding field (see "Data Specs" above). By checking this flag the client can determine if an entry is to be considered non-existent and may no longer display it. A client **should** not remove this flag unless the user explicitly requests so.
