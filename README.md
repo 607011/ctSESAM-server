@@ -15,6 +15,45 @@ userid | TEXT | associated user name
 domain | TEXT | domain name
 data   | BLOB | encrypted, then base64 encoded data
 
+## Encoding data
+
+The `data` field contains base64 encoded AES encrypted JSON data.
+
+The encoding process at a glance:
+
+```
+         to json            encryption                 base64 
+raw data -------> JSON data ----------> encrypted data ------> base64 encoded data
+```
+
+Converting the raw data to the JSON object literal **must** lead to the following structure whereby `<string>`, `boolean` and so on describes the type of the actual value:
+
+```
+{
+  'domain': <string>,
+  'username': <string>,
+  'useLowerCase': <boolean>,
+  'useUpperCase': <boolean>,
+  'useDigits': <boolean>,
+  'useExtra': <boolean>,
+  'useCustom': <boolean>,
+  'avoidAmbiguous': <boolean>,
+  'customCharacterSet': <string>,
+  'iterations': <integer>,
+  'length': <integer>,
+  'salt': <salt>,
+  'forceValidation': <boolean>
+  'validatorRegEx': <string>,
+  'cDate': <string>,
+  'mDate': <string>
+}
+```
+
+For encryption, the client **must** use AES in CBC mode (cipher block chaining) with a 256 bit key and the byte sequence `0xb5, 0x4f, 0xcf, 0xb0, 0x88, 0x09, 0x55, 0xe5, 0xbf, 0x79, 0xaf, 0x37, 0x71, 0x1c, 0x28, 0xb6` as the initialization vector (IV).
+
+The resulting cipher **must** then be base64 encoded. The reason for this lies in the network communication protocol for which all data has to be url encoded (see below). If the data already has been base64 encoded the data to be transferred is smaller than if binary data has to be url encoded.
+
+
 
 ## Communication protocols
 
@@ -68,4 +107,5 @@ The reply contains an array of data sets in the field `result` (see above):
 ```
 
 The `status` field contains "ok" if no errors occured. Otherwise it contains "error" and the field `error` contains a message describing the error.
+
 
