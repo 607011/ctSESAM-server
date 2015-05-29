@@ -4,14 +4,17 @@
 
 ## Getting started
 
-Put the project files into a directory accessible by your webserver. The following assumes that all files are contained in the directory D:/Developer/xampp/htdocs/ctpwdgen-server and that this directory can be accessed by a client via the URL https://localhost/ctpwdgen-server. Check that your configuration by calling the URL in your favorite web browser: You should see the message: "This page is intentionally left blank.".
+ * Put the project files into a directory accessible by your webserver. The following assumes that all files are contained in the directory D:/Developer/xampp/htdocs/ctpwdgen-server and that this directory can be accessed by a client via the URL https://localhost/ctpwdgen-server. Check that your configuration by calling the URL in your favorite web browser: You should see the message: "This page is intentionally left blank.".
 
-_ctpwdgen-server_ uses an SQLite 3 database to store data. The path to the database is configured in the project file config.php. Set the variable `$DB_PATH` accordingly. By default it's D:/Developer/xampp. The confioured directory **must** be writable by your web server.
+ * _ctpwdgen-server_ uses an SQLite 3 database to store data. The path to the database is configured in the project file ajax/config.php. Set the variable `$DB_PATH` accordingly. By default it's D:/Developer/xampp. The configured directory **must** be writable by your web server.
+
+ * Call https://localhost/ctpwdgen-server/ajax/install.php to create the database.
+
+_ctpwdgen-server_ is now ready for action.
 
 ## Data storage
 
-All data the be synced with the clients is stored in an SQL database (SQLite 3).
-The table layout is as follows:
+The SQLite 3 database contains a single table with the following layout:
 
 Field  | Type | Description
 ------ | ---- | -----------
