@@ -1,7 +1,12 @@
 # ctpwdgen-server
 
-**Sync server for ctpwdgen**
+**Sync server for [ctpwdgen](https://github.com/ola-ct/ctpwdgen)**
 
+## Getting started
+
+Put the project files into a directory accessible by your webserver. The following assumes that all files are contained in the directory D:/Developer/xampp/htdocs/ctpwdgen-server and that this directory can be accessed by a client via the URL https://localhost/ctpwdgen-server. Check that your configuration by calling the URL in your favorite web browser: You should see the message: "This page is intentionally left blank.".
+
+_ctpwdgen-server_ uses an SQLite 3 database to store data. The path to the database is configured in the project file config.php. Set the variable `$DB_PATH` accordingly. By default it's D:/Developer/xampp. The confioured directory **must** be writable by your web server.
 
 ## Data storage
 
@@ -26,12 +31,13 @@ The encoding process at a glance:
 raw data -------> JSON data ----------> encrypted data ------> base64 encoded data
 ```
 
-Converting the raw data to the JSON object literal **must** lead to the following structure whereby `<string>`, `boolean` and so on describes the type of the actual value:
+### Data specs
+
+Converting the raw data to the JSON object literal **must** lead to the following structure whereby `<string>`, `boolean` and so on describe the types of the actual values:
 
 ```
 {
   'domain': <string>,
-  'username': <string>,
   'useLowerCase': <boolean>,
   'useUpperCase': <boolean>,
   'useDigits': <boolean>,
@@ -49,11 +55,31 @@ Converting the raw data to the JSON object literal **must** lead to the followin
 }
 ```
 
+The field `domain` contains the domain the rest of the data refers to.
+
+If `useLowerCase` is `true`, lower case characters ("abcdefghijklmnopqrstuvwxyz") are added to the pool of characters available for password generation.
+
+If `useUpperCase` is `true`, all upper case characters ("ABCDEFGHIJKLMNOPQRSTUVWXYZ") are added to the pool of characters available for password generation. If `avoidAmbiguous` is `true` upper case characters except "I" are added.
+
+If `useDigits` is `true`, all digits ("0123456789") are added to the pool of characters available for password generation.
+
+If `useDigits` is `true`, a couple of special characters ("#!\"§$%&/()[]{}=-_+*<>;:.") are added to the pool of characters available for password generation.
+
+If `forceValidation` is `true` the resulting password **must** match the regular expression given in `validatorRegEx`.
+
+The field `iterations` contains the number of iterations used for [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2).
+
+The field `length` contains the required length of the generated password.
+
+The field `salt` contains the salt use for [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2).
+
+The fields `cDate` and `mDate` contain dates in [ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601) (e.g. "2015-05-28T14:07:12"), whereby `cDate` resembles the date and time when the data set was created, and `mDate` when it was last modified.
+
+### Encryption
+
 For encryption, the client **must** use AES in CBC mode (cipher block chaining) with a 256 bit key and the byte sequence `0xb5, 0x4f, 0xcf, 0xb0, 0x88, 0x09, 0x55, 0xe5, 0xbf, 0x79, 0xaf, 0x37, 0x71, 0x1c, 0x28, 0xb6` as the initialization vector (IV).
 
 The resulting cipher **must** then be base64 encoded. The reason for this lies in the network communication protocol for which all data has to be url encoded (see below). If the data already has been base64 encoded the data to be transferred is smaller than if binary data has to be url encoded.
-
-
 
 ## Communication protocols
 
