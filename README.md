@@ -174,4 +174,4 @@ domain | the name of the domain to be deleted
 
 If the server finds an entry for the given domain, the entry is irrevocably deleted. This only affects the entries belonging to the authenticated user.
 
-_Caveat!_ This function exists to administer the database. It is not supposed to be called by a regular client to actually delete an entry. Instead the client **should** mark a entry as deleted by setting the corresponding field (see "Data Specs" above). By checking this flag the client can determine if an entry is to be considered non-existent and may no longer display it. A client **should** not remove this flag unless the user explicitly requests so.
+_Caveat!_ This function solely exists to administer the database. It is not supposed to be called by a regular client to actually delete an entry. Instead the client **should** mark a entry as deleted by setting the corresponding field (see "Data Specs" above). By checking this flag the client can determine if an entry is to be considered non-existent and may no longer display it. A client **should** not remove this flag unless the user explicitly requests so.
