@@ -23,12 +23,12 @@ _ctpwdgen-server_ is now ready for action.
 
 The SQLite 3 database contains a single table with the following layout:
 
-Field  | Type | Description
------- | ---- | -----------
-id     | INT  | primary key
-userid | TEXT | associated user name
-domain | TEXT | domain name
-data   | BLOB | encrypted, then base64 encoded data
+Field   | Type | Description
+------- | ---- | -----------
+id      | INT  | primary key
+userid  | TEXT | associated user name
+domain  | TEXT | domain name
+data    | BLOB | encrypted, then base64 encoded data
 
 ## Encoding data
 
@@ -61,7 +61,8 @@ Converting the raw data to the JSON object literal **must** lead to the followin
   'forceValidation': <boolean>
   'validatorRegEx': <string>,
   'cDate': <string>,
-  'mDate': <string>
+  'mDate': <string>,
+  'deleted' <boolean>
 }
 ```
 
@@ -84,6 +85,8 @@ The field `length` contains the required length of the generated password.
 The field `salt` contains the salt use for [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2).
 
 The fields `cDate` and `mDate` contain dates in [ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601) (e.g. "2015-05-28T14:07:12"), whereby `cDate` resembles the date and time when the data set was created, and `mDate` when it was last modified.
+
+If `deleted` is `true`, the client **should** consider this entry as deleted. It's up to client how to interpret this flag. The client **may** reset this flag.
 
 ### Encryption
 
@@ -121,13 +124,13 @@ Multiple data sets are sent as an array of data sets:
 ]
 ```
 
-### Reading all data for a certain user
+### Reading all domain data for a certain user
 
 Access ajax/read.php to read all user's data.
 
 The POST data **shall** be empty.
 
-The reply contains an array of data sets in the field `result` (see above):
+The reply contains an array of all domain data belonging to the user. The data is held by the field `result` (see above):
 
 ```
 {
@@ -144,4 +147,29 @@ The reply contains an array of data sets in the field `result` (see above):
 
 The `status` field contains "ok" if no errors occured. Otherwise it contains "error" and the field `error` contains a message describing the error.
 
+### Create/update domain data
 
+Access ajax/write.php to create a new domain or update an existing one.
+
+This will modify the server's database.
+
+The POST data **must** contain the following x-www-form-urlencoded fields:
+
+Field  | Contents
+------ | --------------------------------------------
+domain | the name of the domain to be created/updated
+data   | the data to be stored in the field `data`.
+
+If the server finds an entry for the given domain, it updates the stored data with the contents of `data`. If not, a new entry is created.
+
+### Delete domain data
+
+Access ajax/delete.php to delete an existing database entry.
+
+The POST data **must** contain the following x-www-form-urlencoded fields:
+
+Field  | Contents
+------ | --------------------------------------------
+domain | the name of the domain to be deleted
+
+If the server finds an entry for the given domain, the entry is unrevocably deleted.
