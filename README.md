@@ -1,13 +1,20 @@
 # ctpwdgen-server
 
-**Sync server for [ctpwdgen](https://github.com/ola-ct/ctpwdgen)**
+**Sync server for ctpwdgen**
+
+_ctpwdgen-server_ is a data store for [ctpwdgen](https://github.com/ola-ct/ctpwdgen). It's supposed to be installed on a web server and used by only you or a small community (your family, close friends).
+
+The web server **must** support PHP 5.x (or newer) with SQLite module activated.
 
 ## Getting started
 
- * Put the project files into a directory accessible by your webserver. The following assumes that all files are contained in the directory D:/Developer/xampp/htdocs/ctpwdgen-server and that this directory can be accessed by a client via the URL https://localhost/ctpwdgen-server. Check that your configuration by calling the URL in your favorite web browser: You should see the message: "This page is intentionally left blank.".
+Your personal instance of _ctpwdgen-server_ is easy to set up.
 
+ * Clone the [repository](https://github.com/ola-ct/ctpwdgen-server).
+ * Copy the project files into a directory accessible by your webserver. The following assumes that all files are contained in the directory D:/Developer/xampp/htdocs/ctpwdgen-server and that this directory can be accessed by a client via the URL https://localhost/ctpwdgen-server. Reminder: You would prefer to use HTTPS instead of unencrypted HTTP because _ctpwdgen-server_ authorizes its users via [HTTP basic access authentication](http://en.wikipedia.org/wiki/Basic_access_authentication) by which credentials are transferred in an unsafe way.
+ * For HTTP basic access authentication you **should** protect the just created directory by placing an .htaccess file there (Apache users!) or doing something else adequate for your preferred web server.
+ * Check that your configuration by calling the URL in your favorite web browser: You should see the message "This page is intentionally left blank.".
  * _ctpwdgen-server_ uses an SQLite 3 database to store data. The path to the database is configured in the project file ajax/config.php. Set the variable `$DB_PATH` accordingly. By default it's D:/Developer/xampp. The configured directory **must** be writable by your web server.
-
  * Call https://localhost/ctpwdgen-server/ajax/install.php to create the database.
 
 _ctpwdgen-server_ is now ready for action.
