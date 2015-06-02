@@ -35,9 +35,12 @@ The `data` field contains base64 encoded AES encrypted JSON data.
 The encoding process at a glance:
 
 ```
-         to json            encryption                 base64 
-raw data -------> JSON data ----------> encrypted data ------> base64 encoded data
+         to json            compress                  encryption                 base64 
+raw data -------> JSON data --------> compressed data ----------> encrypted data ------> base64 encoded data
 ```
+
+Decoding works vice versa.
+
 
 ### Data Specs
 
@@ -85,6 +88,13 @@ The field `salt` contains the salt use for [PBKDF2](http://en.wikipedia.org/wiki
 The fields `cDate` and `mDate` contain dates in [ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601) (e.g. "2015-05-28T14:07:12"), whereby `cDate` resembles the date and time when the data set was created, and `mDate` when it was last modified.
 
 If `deleted` is `true`, the client **should** consider this entry as deleted. It's up to client how to interpret this flag. The client **may** reset this flag.
+
+### Compression
+
+The data is compressed using the [DEFLATE](http://en.wikipedia.org/wiki/DEFLATE) algorithm used by [zlib](http://en.wikipedia.org/wiki/Zlib).
+
+The compressed data is prepended by a four byte long header. The header contains the expected length (in bytes) of the uncompressed data, expressed as an unsigned, big-endian, 32-bit integer.
+
 
 ### Encryption
 
