@@ -27,8 +27,7 @@ Field   | Type | Description
 ------- | ---- | -----------
 id      | INT  | primary key
 userid  | TEXT | associated user name
-domain  | TEXT | domain name
-data    | BLOB | encrypted, then base64 encoded data
+data    | BLOB | encrypted, then base64 encoded ctpwdgen parameters
 
 ## Encoding data
 
@@ -104,26 +103,14 @@ The server extracts _username_ from the header and uses it to reference the tabl
 
 The server responds with JSON encoded data. 
 
-When applicable, i.e. when the server is requested to respond with single or multiple data sets, a single data set for a single database contains fields with exactly the same names as in the database, e.g.:
+The data set for a single database contains fields with exactly the same names as in the database, e.g.:
 
 ```
 {
   'id': 12345,
   'userid': 'ola',
-  'domain': 'ct.de',
   'data': 'GnsiY3QuZGUiOnsiYXZvaWRBbWJpZ3VvdXMiOnRyd...'
 }
-```
-
-Multiple data sets are sent as an array of data sets:
-
-```
-[
-  { <data set 1> },
-  { <data set 2> },
-  { <data set 3> },
-  ...
-]
 ```
 
 ### Read All Domain Data
@@ -151,27 +138,12 @@ The `status` field contains "ok" if no errors occured. Otherwise it contains "er
 
 ### Create/Update Domain Data
 
-Access ajax/write.php to create a new domain or update an existing one. Only domains of the authenticated user will be affected by this call.
+Access ajax/write.php to create a new data set for a user or updates an existing one.
 
-The POST data **must** contain the following x-www-form-urlencoded fields:
+The POST data **must** contain the following x-www-form-urlencoded field:
 
 Field  | Contents
 ------ | --------------------------------------------
-domain | the name of the domain to be created/updated
 data   | the data to be stored in the field `data`.
 
-If the server finds an entry for the given domain (and user), it updates the stored data with the contents of `data`. If not, a new entry is created.
-
-### Delete domain data
-
-Access ajax/delete.php to delete an existing database entry.
-
-The POST data **must** contain the following x-www-form-urlencoded fields:
-
-Field  | Contents
------- | --------------------------------------------
-domain | the name of the domain to be deleted
-
-If the server finds an entry for the given domain, the entry is irrevocably deleted. This only affects the entries belonging to the authenticated user.
-
-_Caveat!_ This function solely exists to administer the database. It is not supposed to be called by a regular client to actually delete an entry. Instead the client **should** mark a entry as deleted by setting the corresponding field (see "Data Specs" above). By checking this flag the client can determine if an entry is to be considered non-existent and may no longer display it. A client **should** not remove this flag unless the user explicitly requests so.
+If the server finds an entry for the given user, it updates the stored data with the contents of `data`. If not, a new entry is created.
