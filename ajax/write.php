@@ -22,6 +22,8 @@ require_once 'globals.php';
 
 assert_basic_auth();
 
+$res['rowsaffected'] = 0;
+
 if (!$dbh) {
     $res['status'] = 'error';
     $res['error'] = 'Connecting to database failed';
@@ -34,60 +36,46 @@ if (!isset($_REQUEST['data'])) {
     goto end;
 }
 
-$domain = $_REQUEST['domain'];
-$data = $_REQUEST['data'];
+$data = str_replace(" ", "+", $_REQUEST['data']);
 
-$res['domain'] = $domain;
-
-$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid AND `domain` = :domain');
-$sth->bindParam(':domain', $domain);
-$sth->bindParam(':userid', $authenticated_user);
+$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
+$sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
 $result = $sth->execute();
 $rows = $sth->fetch(PDO::FETCH_NUM);
 if ($rows) {
-	$sql = 'UPDATE `domains` SET' .
-        ' `data` = :data,' .
-        ' WHERE `userid` = :userid AND `domain` = :domain';
-	$sth = $dbh->prepare($sql);
-    $sth->bindParam(':domain', $domain);
-    $sth->bindParam(':userid', $authenticated_user]);
-    $sth->bindParam(':data', $data);
-    try {
-    	$result = $sth->execute();
-    }
-    catch (PDOException $e) {
-    	$res['status'] = 'error';
-    	$res['error'] = $e->getMessage();
-    	$res['data'] = $data;
-    }
-    $res['result'] = $result;
-    $res['rowcount'] = $sth->rowCount();
+  $sql = 'UPDATE `domains` SET `data` = :data WHERE `userid` = :userid';
+  $sth = $dbh->prepare($sql);
+  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+  $sth->bindParam(':data', $data, PDO::PARAM_LOB);
+  try {
+    $result = $sth->execute();
+  }
+  catch (PDOException $e) {
+    $res['status'] = 'error';
+    $res['error'] = $e->getMessage();
+    goto end;
+  }
+  $res['result'] = $result;
+  $res['rowsaffected'] = $sth->rowCount();
 }
 else {
-	$sql = 'INSERT INTO `domains` (domain, userid, data) VALUES(:domain, :userid, :data)';
-	$sth = $dbh->prepare($sql);
-    $sth->bindParam(':domain', $domain);
-    $sth->bindParam(':userid', $authenticated_user]);
-    $sth->bindParam(':data', $data);
-    try {
-    	$result = $sth->execute();
-    }
-    catch (PDOException $e) {
-    	$res['status'] = 'error';
-    	$res['error'] = $e->getMessage();
-    	$res['data'] = $domain;
-    }
-    $res['result'] = $result;
-    $res['rowcount'] = $sth->rowCount();
+  $sql = 'INSERT INTO `domains` (userid, data) VALUES(:userid, :data)';
+  $sth = $dbh->prepare($sql);
+  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+  $sth->bindParam(':data', $data, PDO::PARAM_LOB);
+  try {
+    $result = $sth->execute();
+  }
+  catch (PDOException $e) {
+    $res['status'] = 'error';
+    $res['error'] = $e->getMessage();
+    goto end;
+  }
+  $res['result'] = $result;
+  $res['rowsaffected'] = $sth->rowCount();
 }
 
 
 end:
-if (isset($res['status']) && $res['status'] === 'error') {
-    $res['inserted'] = 0;
-}
-
 header('Content-Type: text/json');
 echo json_encode($res);
-
-?>

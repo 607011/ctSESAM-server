@@ -22,28 +22,19 @@ require_once 'globals.php';
 
 assert_basic_auth();
 
-if (!$dbh) {
-    $res['status'] = 'error';
-    $res['error'] = 'Connecting to database failed';
-    goto end;
-}
-
-if (isset($_REQUEST['domain'])) {
-	$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid AND `domain` = :domain');
-	$sth->bindParam(':domain', $_REQUEST['domain']);
-	$sth->bindParam(':userid', $authenticated_user);
-	$result = $sth->execute();
-	$res['result'] = $sth->fetchAll(PDO::FETCH_ASSOC);
+if ($dbh) {
+  $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
+  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+  $result = $sth->execute();
+  $r = $sth->fetch(PDO::FETCH_ASSOC);
+  if ($r)
+    $res['result'] = $r["data"];
 }
 else {
-	$sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
-	$sth->bindParam(':userid', $authenticated_user);
-	$result = $sth->execute();
-	$res['result'] = $sth->fetchAll(PDO::FETCH_ASSOC);
+  $res['status'] = 'error';
+  $res['error'] = 'Connecting to database failed';
 }
 
-end:
 header('Content-Type: text/json');
-echo json_encode($res);
-
-?>
+$json = json_encode($res);
+echo str_replace("\/", "/", $json);
