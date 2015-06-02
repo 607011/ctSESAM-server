@@ -116,9 +116,8 @@ The data set for a single database contains fields with exactly the same names a
 
 ```
 {
-  'id': 12345,
   'userid': 'ola',
-  'data': 'GnsiY3QuZGUiOnsiYXZvaWRBbWJpZ3VvdXMiOnRyd...'
+  'data': 'LGxVWtGUi7Cp/QlvACjbd9KBDcxft+ofxo...'
 }
 ```
 
