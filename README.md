@@ -25,8 +25,7 @@ The SQLite 3 database contains a single table with the following layout:
 
 Field   | Type | Description
 ------- | ---- | -----------
-id      | INT  | primary key
-userid  | TEXT | associated user name
+userid  | TEXT | associated user name (primary key)
 data    | BLOB | encrypted, then base64 encoded ctpwdgen parameters
 
 ## Encoding data
