@@ -34,7 +34,7 @@ function assert_basic_auth() {
   global $authenticated_user;
   global $res;
   if (!isset($_SERVER['PHP_AUTH_USER'])) {
-    header('WWW-Authenticate: Basic realm="ctpwdgen sync server"');
+    header('WWW-Authenticate: Basic realm="ctSESAM sync server"');
     header('HTTP/1.0 401 Unauthorized');
     echo 'HTTP basic authentication required';
     exit;

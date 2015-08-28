@@ -9,3 +9,7 @@ if ($dbh) {
         ')');
     echo "Table 'domains' created.";
 }
+else {
+  echo "Something went wrong.";
+}
+

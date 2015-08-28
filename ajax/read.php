@@ -27,8 +27,9 @@ if ($dbh) {
   $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
   $result = $sth->execute();
   $r = $sth->fetch(PDO::FETCH_ASSOC);
-  if ($r)
+  if ($r) {
     $res['result'] = $r["data"];
+  }
 }
 else {
   $res['status'] = 'error';
