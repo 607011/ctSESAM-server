@@ -5,6 +5,6 @@
     <title>c't SESAM sync server</title>
   </head>
   <body>
-    <p>Herzlichen Glückwunsch! Sie haben den c't-SESAM-Sync-Server erfolgreich installiert.</p>
+    <p>c't-SESAM-Sync-Server läuft auf Host <?php echo $_SERVER['SERVER_NAME']; ?></p>
   </body>
 </html>

@@ -20,15 +20,8 @@
 
 $res = array('status' => 'ok');
 
-if ($_SERVER['SERVER_NAME'] === 'localhost' && strpos($_SERVER['REQUEST_URI'], '/ctSESAM') === 0) {
-  $DB_PATH = 'D:/Developer/xampp';
-}
-else if ($_SERVER['SERVER_NAME'] === 'ersatzworld.net' && strpos($_SERVER['REQUEST_URI'], '/ctSESAM') === 0) {
-  $DB_PATH = '/var/www/sqlite';
-}
-
-// set this option to true to enable persistent database connections; set to false for debugging
-$DB_PERSISTENT = false;
+$DB_PATH = '/var/www/sqlite';
+$DB_PERSISTENT = true;
 $DB_NAME = "$DB_PATH/ctSESAM-server.sqlite";
 
 function directCall() {
