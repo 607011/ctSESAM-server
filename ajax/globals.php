@@ -33,6 +33,11 @@ function DEBUG($msg) {
 function assert_basic_auth() {
   global $authenticated_user;
   global $res;
+  if (preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
+    list($name, $password) = explode(':', base64_decode($matches[1]));
+    $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+    $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+  }
   if (!isset($_SERVER['PHP_AUTH_USER'])) {
     header('WWW-Authenticate: Basic realm="ctSESAM sync server"');
     header('HTTP/1.0 401 Unauthorized');
