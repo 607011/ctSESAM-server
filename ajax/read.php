@@ -33,8 +33,10 @@ if ($dbh) {
         $res['result'] = $r['data'];
     }
 } else {
-    $res['status'] = 'error';
-    $res['error'] = 'Connecting to database failed';
+    sendResponse(array(
+        'error' => 'Connecting to database failed',
+        false
+    ));
 }
 
 sendResponse($res);

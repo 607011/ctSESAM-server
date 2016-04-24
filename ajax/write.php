@@ -25,15 +25,17 @@ assert_basic_auth();
 $res['rowsaffected'] = 0;
 
 if (!$dbh) {
-    $res['status'] = 'error';
-    $res['error'] = 'Connecting to database failed';
-    sendResponse($res);
+    sendResponse(array(
+        'error' => 'Connecting to database failed',
+        false
+    ));
 }
 
 if (!isset($_REQUEST['data'])) {
-    $res['status'] = 'error';
-    $res['error'] = '"data" missing or invalid';
-    sendResponse($res);
+    sendResponse(array(
+        'error' => '"data" missing or invalid',
+        false
+    ));
 }
 
 $data = str_replace(' ', '+', $_REQUEST['data']);
@@ -51,9 +53,10 @@ if ($rows) {
     try {
         $result = $sth->execute();
     } catch (PDOException $e) {
-        $res['status'] = 'error';
-        $res['error'] = $e->getMessage();
-        sendResponse($res);
+        sendResponse(array(
+            'error' => $e->getMessage(),
+            false
+        ));
     }
     $res['result'] = $result;
     $res['rowsaffected'] = $sth->rowCount();
@@ -65,9 +68,10 @@ if ($rows) {
     try {
         $result = $sth->execute();
     } catch (PDOException $e) {
-        $res['status'] = 'error';
-        $res['error'] = $e->getMessage();
-        sendResponse($res);
+        sendResponse(array(
+            'error' => $e->getMessage(),
+            false
+        ));
     }
     $res['result'] = $result;
     $res['rowsaffected'] = $sth->rowCount();

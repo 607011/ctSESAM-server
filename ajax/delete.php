@@ -22,22 +22,22 @@ require_once 'globals.php';
 
 assert_basic_auth();
 
-$res['rowsaffected'] = 0;
-
 if (!$dbh) {
-    $res['status'] = 'error';
-    $res['error'] = 'Connecting to database failed';
-    sendResponse($res);
+    sendResponse(array(
+        'error' => 'Connecting to database failed',
+        false
+    ));
 }
 
 $sth = $dbh->prepare('DELETE FROM `domains` WHERE `userid` = :userid');
 $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
 $result = $sth->execute();
-if ($result) {
-    $res['status'] = 'ok';
-} else {
-    $res['status'] = 'error';
-    $res['error'] = 'SQL statement failed:' . $sth->errorInfo();
+
+if (!$result) {
+    sendResponse(array(
+        'error' => 'SQL statement failed:' . $sth->errorInfo(),
+        false
+    ));
 }
 
-sendResponse($res);
+sendResponse();

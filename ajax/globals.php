@@ -18,20 +18,23 @@
 
 */
 
-$res = array('status' => 'ok');
 $authenticated_user = null;
 
 require_once '../lib/functions.php';
 
 if (!file_exists('config.php')) {
-    $res['message'] = 'You need to copy ajax/config-default.php to ajax/config.php & open /ajax/install.php!';
-    sendResponse($res);
+    sendResponse(array(
+        'message' => 'You need to copy ajax/config-default.php to ajax/config.php & open /ajax/install.php!',
+        false
+    ));
 }
 $config = require 'config.php';
 
 if (directCall()) {
-    $res['message'] = 'Calling ' . $_SERVER['PHP_SELF'] . ' directly has no effect anything ;-)';
-    sendResponse($res);
+    sendResponse(array(
+        'message' => 'Calling ' . $_SERVER['PHP_SELF'] . ' directly has no effect anything ;-)',
+        false
+    ));
 }
 
 $dbh = new PDO('sqlite:' . $config['db_path'] . '/' . $config['db_name'], null, null,

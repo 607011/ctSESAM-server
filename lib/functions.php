@@ -16,7 +16,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function sendResponse($data){
+function sendResponse($data = array(), $success = true)
+{
+    $status = 'ok';
+
+    if (!$success) {
+        $status = 'error';
+    }
+    
+    $data = array_merge(array(
+        'status' => $status
+    ), $data);
+
     header('Content-Type: text/json');
     $json = json_encode($data, JSON_UNESCAPED_SLASHES);
     echo $json;
