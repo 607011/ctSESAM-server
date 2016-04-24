@@ -18,6 +18,8 @@
 
 */
 
-$DB_PATH = '/var/www/sqlite';
-$DB_PERSISTENT = true;
-$DB_NAME = $DB_PATH . '/ctSESAM-server.sqlite';
+return array(
+    'db_path'       => '/var/www/sqlite',
+    'db_name'       => 'ctSESAM-server.sqlite',
+    'db_persistent' => true,
+);

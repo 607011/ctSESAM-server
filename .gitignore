@@ -11,3 +11,6 @@ Thumbs.db
 
 # IDE dir
 /.idea/
+
+# Project files
+config.php

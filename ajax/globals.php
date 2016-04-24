@@ -23,16 +23,21 @@ $res = array('status' => 'ok');
 $authenticated_user = null;
 
 require_once '../lib/functions.php';
-require_once 'config.php';
+
+if (!file_exists('config.php')) {
+    $res['message'] = 'You need to copy ajax/config-default.php to ajax/config.php & open /ajax/install.php!';
+    sendResponse($res);
+}
+$config = require 'config.php';
 
 if (directCall()) {
-    $res['message'] = 'Calling ' . $_SERVER['PHP_SELF'] . ' directly doesn\'t do anything ;-)';
+    $res['message'] = 'Calling ' . $_SERVER['PHP_SELF'] . ' directly has no effect anything ;-)';
     sendResponse($res);
 }
 
-$dbh = new PDO('sqlite:' . $DB_NAME, null, null,
+$dbh = new PDO('sqlite:' . $config['db_path'] . '/' . $config['db_name'], null, null,
     array(
         PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_PERSISTENT => $DB_PERSISTENT
+        PDO::ATTR_PERSISTENT => $config['db_persistent']
     )
 );
