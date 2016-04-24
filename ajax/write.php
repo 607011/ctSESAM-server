@@ -36,45 +36,42 @@ if (!isset($_REQUEST['data'])) {
     goto end;
 }
 
-$data = str_replace(" ", "+", $_REQUEST['data']);
+$data = str_replace(' ', '+', $_REQUEST['data']);
 
 $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
 $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
 $result = $sth->execute();
 $rows = $sth->fetch(PDO::FETCH_NUM);
-if ($rows) {
-  $sql = 'UPDATE `domains` SET `data` = :data WHERE `userid` = :userid';
-  $sth = $dbh->prepare($sql);
-  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-  $sth->bindParam(':data', $data, PDO::PARAM_LOB);
-  try {
-    $result = $sth->execute();
-  }
-  catch (PDOException $e) {
-    $res['status'] = 'error';
-    $res['error'] = $e->getMessage();
-    goto end;
-  }
-  $res['result'] = $result;
-  $res['rowsaffected'] = $sth->rowCount();
-}
-else {
-  $sql = 'INSERT INTO `domains` (userid, data) VALUES(:userid, :data)';
-  $sth = $dbh->prepare($sql);
-  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-  $sth->bindParam(':data', $data, PDO::PARAM_LOB);
-  try {
-    $result = $sth->execute();
-  }
-  catch (PDOException $e) {
-    $res['status'] = 'error';
-    $res['error'] = $e->getMessage();
-    goto end;
-  }
-  $res['result'] = $result;
-  $res['rowsaffected'] = $sth->rowCount();
-}
 
+if ($rows) {
+    $sql = 'UPDATE `domains` SET `data` = :data WHERE `userid` = :userid';
+    $sth = $dbh->prepare($sql);
+    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+    $sth->bindParam(':data', $data, PDO::PARAM_LOB);
+    try {
+        $result = $sth->execute();
+    } catch (PDOException $e) {
+        $res['status'] = 'error';
+        $res['error'] = $e->getMessage();
+        goto end;
+    }
+    $res['result'] = $result;
+    $res['rowsaffected'] = $sth->rowCount();
+} else {
+    $sql = 'INSERT INTO `domains` (userid, data) VALUES(:userid, :data)';
+    $sth = $dbh->prepare($sql);
+    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+    $sth->bindParam(':data', $data, PDO::PARAM_LOB);
+    try {
+        $result = $sth->execute();
+    } catch (PDOException $e) {
+        $res['status'] = 'error';
+        $res['error'] = $e->getMessage();
+        goto end;
+    }
+    $res['result'] = $result;
+    $res['rowsaffected'] = $sth->rowCount();
+}
 
 end:
 header('Content-Type: text/json');

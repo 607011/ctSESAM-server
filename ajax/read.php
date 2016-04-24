@@ -22,20 +22,21 @@ require_once 'globals.php';
 
 assert_basic_auth();
 
+$res = array();
+
 if ($dbh) {
-  $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
-  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-  $result = $sth->execute();
-  $r = $sth->fetch(PDO::FETCH_ASSOC);
-  if ($r) {
-    $res['result'] = $r["data"];
-  }
-}
-else {
-  $res['status'] = 'error';
-  $res['error'] = 'Connecting to database failed';
+    $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
+    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+    $result = $sth->execute();
+    $r = $sth->fetch(PDO::FETCH_ASSOC);
+    if ($r) {
+        $res['result'] = $r['data'];
+    }
+} else {
+    $res['status'] = 'error';
+    $res['error'] = 'Connecting to database failed';
 }
 
 header('Content-Type: text/json');
 $json = json_encode($res);
-echo str_replace("\/", "/", $json);
+echo str_replace('\\/', '/', $json);

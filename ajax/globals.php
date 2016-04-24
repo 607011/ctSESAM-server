@@ -20,46 +20,43 @@
 
 require_once 'config.php';
 
-
 $authenticated_user = null;
 
-
-function DEBUG($msg) {
-  $timestamp = date('D M j H:i:s.u Y');
-  file_put_contents('php://stdout', "[$timestamp] [ctpwdgen:debug] $msg\n");
+function DEBUG($msg)
+{
+    $timestamp = date('D M j H:i:s.u Y');
+    file_put_contents('php://stdout', '[' . $timestamp . '] [ctpwdgen:debug] ' . $msg . PHP_EOL);
 }
 
-
-function assert_basic_auth() {
-  global $authenticated_user;
-  global $res;
-  if (preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
-    list($name, $password) = explode(':', base64_decode($matches[1]));
-    $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-    $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-  }
-  if (!isset($_SERVER['PHP_AUTH_USER'])) {
-    header('WWW-Authenticate: Basic realm="ctSESAM sync server"');
-    header('HTTP/1.0 401 Unauthorized');
-    echo 'HTTP basic authentication required';
-    exit;
-  }
-  else {
-    $authenticated_user = $_SERVER['PHP_AUTH_USER'];
-  }
+function assert_basic_auth()
+{
+    global $authenticated_user;
+    if (preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
+        list($name, $password) = explode(':', base64_decode($matches[1]));
+        $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+        $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+    }
+    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+        header('WWW-Authenticate: Basic realm="ctSESAM sync server"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo 'HTTP basic authentication required';
+        exit;
+    } else {
+        $authenticated_user = $_SERVER['PHP_AUTH_USER'];
+    }
 }
 
 $T0 = microtime(true);
-function processingTime() {
-  global $T0;
-  $dt = round(microtime(true) - $T0, 3);
-  return ($dt < 0.001) ? '<1ms' : '~' . $dt . 's';
+function processingTime()
+{
+    global $T0;
+    $dt = round(microtime(true) - $T0, 3);
+    return ($dt < 0.001) ? '<1ms' : '~' . $dt . 's';
 }
 
-$dbh = new PDO("sqlite:$DB_NAME", null, null,
-	       array(
-		     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-		     PDO::ATTR_PERSISTENT => $DB_PERSISTENT
-		     )
-	       );
-
+$dbh = new PDO('sqlite:' . $DB_NAME, null, null,
+    array(
+        PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_PERSISTENT => $DB_PERSISTENT
+    )
+);

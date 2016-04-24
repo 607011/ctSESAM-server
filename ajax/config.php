@@ -22,14 +22,15 @@ $res = array('status' => 'ok');
 
 $DB_PATH = '/var/www/sqlite';
 $DB_PERSISTENT = true;
-$DB_NAME = "$DB_PATH/ctSESAM-server.sqlite";
+$DB_NAME = $DB_PATH . '/ctSESAM-server.sqlite';
 
-function directCall() {
-  return substr(str_replace("\\", '/', __FILE__), -strlen($_SERVER['PHP_SELF'])) === $_SERVER['PHP_SELF'];
+function directCall()
+{
+    return substr(str_replace('\\', '/', __FILE__), -strlen($_SERVER['PHP_SELF'])) === $_SERVER['PHP_SELF'];
 }
 
 if (directCall()) {
-  header('Content-Type: text/json');
-  $res['message'] = "Calling " . $_SERVER['PHP_SELF'] . " directly doesn't do anything ;-)";
-  echo json_encode($res);
+    header('Content-Type: text/json');
+    $res['message'] = 'Calling ' . $_SERVER['PHP_SELF'] . ' directly doesn\'t do anything ;-)';
+    echo json_encode($res);
 }

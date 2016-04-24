@@ -34,13 +34,11 @@ $sth = $dbh->prepare('DELETE FROM `domains` WHERE `userid` = :userid');
 $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
 $result = $sth->execute();
 if ($result) {
-  $res['status'] = 'ok';
+    $res['status'] = 'ok';
+} else {
+    $res['status'] = 'error';
+    $res['error'] = 'SQL statement failed:' . $sth->errorInfo();
 }
-else {
-  $res['status'] = 'error';
-  $res['error'] = 'SQL statement failed:' + $sth->errorInfo();
-}
-
 
 end:
 header('Content-Type: text/json');
