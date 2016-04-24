@@ -22,4 +22,12 @@ return array(
     'db_path'       => '/var/www/sqlite',
     'db_name'       => 'ctSESAM-server.sqlite',
     'db_persistent' => true,
+    /* Uncomment if not using .htaccess basic auth
+    'users'         => array(
+        // To generate the hash you can use
+        // php -r 'echo password_hash("s3curePa5sw0rd!", PASSWORD_BCRYPT) . PHP_EOL;'
+        // in a terminal
+        'username' => '$2y$10$HaShEdPa5SwORdw1Ths0m3Sal1',
+    ),
+    */
 );
