@@ -1,0 +1,13 @@
+# Auto generated files
+*~
+.~*
+*.back
+*.old
+*.tmp
+*.temp
+*.lock
+*.DS_Store
+Thumbs.db
+
+# IDE dir
+/.idea/
