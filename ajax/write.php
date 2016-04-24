@@ -27,13 +27,13 @@ $res['rowsaffected'] = 0;
 if (!$dbh) {
     $res['status'] = 'error';
     $res['error'] = 'Connecting to database failed';
-    goto end;
+    sendResponse($res);
 }
 
 if (!isset($_REQUEST['data'])) {
     $res['status'] = 'error';
     $res['error'] = '"data" missing or invalid';
-    goto end;
+    sendResponse($res);
 }
 
 $data = str_replace(' ', '+', $_REQUEST['data']);
@@ -53,7 +53,7 @@ if ($rows) {
     } catch (PDOException $e) {
         $res['status'] = 'error';
         $res['error'] = $e->getMessage();
-        goto end;
+        sendResponse($res);
     }
     $res['result'] = $result;
     $res['rowsaffected'] = $sth->rowCount();
@@ -67,12 +67,10 @@ if ($rows) {
     } catch (PDOException $e) {
         $res['status'] = 'error';
         $res['error'] = $e->getMessage();
-        goto end;
+        sendResponse($res);
     }
     $res['result'] = $result;
     $res['rowsaffected'] = $sth->rowCount();
 }
 
-end:
-header('Content-Type: text/json');
-echo json_encode($res);
+sendResponse($res);

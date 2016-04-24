@@ -30,7 +30,6 @@ function directCall()
 }
 
 if (directCall()) {
-    header('Content-Type: text/json');
     $res['message'] = 'Calling ' . $_SERVER['PHP_SELF'] . ' directly doesn\'t do anything ;-)';
-    echo json_encode($res);
+    sendResponse($res);
 }

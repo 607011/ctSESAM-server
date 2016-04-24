@@ -27,7 +27,7 @@ $res['rowsaffected'] = 0;
 if (!$dbh) {
     $res['status'] = 'error';
     $res['error'] = 'Connecting to database failed';
-    goto end;
+    sendResponse($res);
 }
 
 $sth = $dbh->prepare('DELETE FROM `domains` WHERE `userid` = :userid');
@@ -40,6 +40,4 @@ if ($result) {
     $res['error'] = 'SQL statement failed:' . $sth->errorInfo();
 }
 
-end:
-header('Content-Type: text/json');
-echo json_encode($res);
+sendResponse($res);

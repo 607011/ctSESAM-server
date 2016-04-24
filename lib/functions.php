@@ -1,6 +1,5 @@
 <?php
 /*
-
     Copyright (c) 2015 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG
 
     This program is free software: you can redistribute it and/or modify
@@ -15,26 +14,11 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-require_once 'globals.php';
-
-assert_basic_auth();
-
-$res = array();
-
-if ($dbh) {
-    $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
-    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-    $result = $sth->execute();
-    $r = $sth->fetch(PDO::FETCH_ASSOC);
-    if ($r) {
-        $res['result'] = $r['data'];
-    }
-} else {
-    $res['status'] = 'error';
-    $res['error'] = 'Connecting to database failed';
+function sendResponse($data){
+    header('Content-Type: text/json');
+    $json = json_encode($data, JSON_UNESCAPED_SLASHES);
+    echo $json;
+    exit;
 }
-
-sendResponse($res);
