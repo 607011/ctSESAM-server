@@ -20,7 +20,7 @@
 
 $authenticated_user = null;
 
-require_once __DIR__ . '/../lib/functions.php';
+require_once __DIR__ . '/functions.php';
 
 if (!file_exists(__DIR__ . '/../config.php')) {
     sendResponse(array(

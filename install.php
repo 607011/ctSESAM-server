@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/ajax/globals.php';
+require_once __DIR__ . '/lib/base.php';
 
 header('Content-type: text/plain');
 if ($dbh) {
