@@ -18,7 +18,6 @@
 
 */
 
-$T0 = microtime(true);
 $res = array('status' => 'ok');
 $authenticated_user = null;
 

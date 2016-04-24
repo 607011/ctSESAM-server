@@ -45,16 +45,3 @@ function directCall()
 {
     return substr(str_replace('\\', '/', __FILE__), -strlen($_SERVER['PHP_SELF'])) === $_SERVER['PHP_SELF'];
 }
-
-function processingTime()
-{
-    global $T0;
-    $dt = round(microtime(true) - $T0, 3);
-    return ($dt < 0.001) ? '<1ms' : '~' . $dt . 's';
-}
-
-function DEBUG($msg)
-{
-    $timestamp = date('D M j H:i:s.u Y');
-    file_put_contents('php://stdout', '[' . $timestamp . '] [ctpwdgen:debug] ' . $msg . PHP_EOL);
-}
