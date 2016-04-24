@@ -19,7 +19,7 @@
 */
 
 define('SESAM', true);
-require_once 'globals.php';
+require_once __DIR__ . '/globals.php';
 
 assert_basic_auth();
 

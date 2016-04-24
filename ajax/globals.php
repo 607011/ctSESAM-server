@@ -20,15 +20,15 @@
 
 $authenticated_user = null;
 
-require_once '../lib/functions.php';
+require_once __DIR__ . '/../lib/functions.php';
 
-if (!file_exists('config.php')) {
+if (!file_exists(__DIR__ . '/../config.php')) {
     sendResponse(array(
-        'message' => 'You need to copy ajax/config-default.php to ajax/config.php & open /ajax/install.php!',
+        'error' => 'You have to copy /config-default.php to /config.php & open /install.php!',
         false
     ));
 }
-$config = require 'config.php';
+$config = require __DIR__ . '/../config.php';
 
 $dbh = new PDO('sqlite:' . $config['db_path'] . '/' . $config['db_name'], null, null,
     array(
