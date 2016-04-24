@@ -18,6 +18,7 @@
 
 */
 
+define('SESAM', true);
 require_once 'globals.php';
 
 assert_basic_auth();

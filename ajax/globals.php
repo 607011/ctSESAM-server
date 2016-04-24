@@ -1,4 +1,4 @@
-<?php
+<?php defined('SESAM') or die('Direct access permitted');
 /*
 
     Copyright (c) 2015 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG
@@ -29,13 +29,6 @@ if (!file_exists('config.php')) {
     ));
 }
 $config = require 'config.php';
-
-if (directCall()) {
-    sendResponse(array(
-        'message' => 'Calling ' . $_SERVER['PHP_SELF'] . ' directly has no effect anything ;-)',
-        false
-    ));
-}
 
 $dbh = new PDO('sqlite:' . $config['db_path'] . '/' . $config['db_name'], null, null,
     array(

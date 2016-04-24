@@ -1,4 +1,4 @@
-<?php
+<?php defined('SESAM') or die('Direct access permitted');
 /*
 
     Copyright (c) 2015 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG

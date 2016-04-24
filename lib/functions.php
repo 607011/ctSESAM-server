@@ -1,4 +1,4 @@
-<?php
+<?php defined('SESAM') or die('Direct access permitted');
 /*
     Copyright (c) 2015 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG
 
@@ -50,9 +50,4 @@ function assert_basic_auth()
     } else {
         $authenticated_user = $_SERVER['PHP_AUTH_USER'];
     }
-}
-
-function directCall()
-{
-    return substr(str_replace('\\', '/', __FILE__), -strlen($_SERVER['PHP_SELF'])) === $_SERVER['PHP_SELF'];
 }
