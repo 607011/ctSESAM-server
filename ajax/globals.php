@@ -56,10 +56,10 @@ function processingTime() {
   return ($dt < 0.001) ? '<1ms' : '~' . $dt . 's';
 }
 
-$dbh = new PDO("sqlite:$DB_NAME", null, null,
+$dbh = new PDO($DB_CONN, $DB_USER, $DB_PASSWD,
 	       array(
 		     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 		     PDO::ATTR_PERSISTENT => $DB_PERSISTENT
 		     )
 	       );
-
+?>
