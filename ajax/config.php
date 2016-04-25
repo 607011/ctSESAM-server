@@ -21,14 +21,14 @@
 $res = array('status' => 'ok');
 
 $DB_PERSISTENT = true;
-#$DB_PATH = '/var/www/sqlite';
-#$DB_NAME = "$DB_PATH/ctSESAM-server.sqlite";
-$DB_HOST = 'localhost';
-$DB_NAME = 'sesam';
-$DB_USER = 'sesam';
-$DB_PASSWD = 'sesam';
-#$DB_CONN = "sqlite:$DB_NAME";
-$DB_CONN = 'mysql:host='.$DB_HOST.';dbname='.$DB_NAME;
+$DB_PATH = '/var/www/sqlite';
+$DB_NAME = "$DB_PATH/ctSESAM-server-dev.sqlite";
+#$DB_HOST = 'localhost';
+#$DB_NAME = 'sesam';
+#$DB_USER = 'sesam';
+#$DB_PASSWD = 'sesam';
+$DB_CONN = "sqlite:$DB_NAME";
+#$DB_CONN = 'mysql:host='.$DB_HOST.';dbname='.$DB_NAME;
 
 function directCall() {
   return substr(str_replace("\\", '/', __FILE__), -strlen($_SERVER['PHP_SELF'])) === $_SERVER['PHP_SELF'];
