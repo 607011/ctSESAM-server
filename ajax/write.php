@@ -1,7 +1,7 @@
 <?php
 /*
 
-    Copyright (c) 2015 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG
+    Copyright (c) 2015-2016 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,64 +18,64 @@
 
 */
 
-require_once 'globals.php';
+define('SESAM', true);
+require_once __DIR__ . '/../lib/base.php';
 
 assert_basic_auth();
 
-$res['rowsaffected'] = 0;
+$res = array();
 
 if (!$dbh) {
-    $res['status'] = 'error';
-    $res['error'] = 'Connecting to database failed';
-    goto end;
+    sendResponse(array(
+        'error' => 'Connecting to database failed',
+        false
+    ));
 }
 
 if (!isset($_REQUEST['data'])) {
-    $res['status'] = 'error';
-    $res['error'] = '"data" missing or invalid';
-    goto end;
+    sendResponse(array(
+        'error' => '"data" missing or invalid',
+        false
+    ));
 }
 
-$data = str_replace(" ", "+", $_REQUEST['data']);
+$data = str_replace(' ', '+', $_REQUEST['data']);
 
 $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
 $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
 $result = $sth->execute();
 $rows = $sth->fetch(PDO::FETCH_NUM);
+
 if ($rows) {
-  $sql = 'UPDATE `domains` SET `data` = :data WHERE `userid` = :userid';
-  $sth = $dbh->prepare($sql);
-  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-  $sth->bindParam(':data', $data, PDO::PARAM_LOB);
-  try {
-    $result = $sth->execute();
-  }
-  catch (PDOException $e) {
-    $res['status'] = 'error';
-    $res['error'] = $e->getMessage();
-    goto end;
-  }
-  $res['result'] = $result;
-  $res['rowsaffected'] = $sth->rowCount();
-}
-else {
-  $sql = 'INSERT INTO `domains` (userid, data) VALUES(:userid, :data)';
-  $sth = $dbh->prepare($sql);
-  $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-  $sth->bindParam(':data', $data, PDO::PARAM_LOB);
-  try {
-    $result = $sth->execute();
-  }
-  catch (PDOException $e) {
-    $res['status'] = 'error';
-    $res['error'] = $e->getMessage();
-    goto end;
-  }
-  $res['result'] = $result;
-  $res['rowsaffected'] = $sth->rowCount();
+    $sql = 'UPDATE `domains` SET `data` = :data WHERE `userid` = :userid';
+    $sth = $dbh->prepare($sql);
+    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+    $sth->bindParam(':data', $data, PDO::PARAM_LOB);
+    try {
+        $result = $sth->execute();
+    } catch (PDOException $e) {
+        sendResponse(array(
+            'error' => $e->getMessage(),
+            false
+        ));
+    }
+    $res['result'] = $result;
+    $res['rowsaffected'] = $sth->rowCount();
+} else {
+    $sql = 'INSERT INTO `domains` (userid, data) VALUES(:userid, :data)';
+    $sth = $dbh->prepare($sql);
+    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
+    $sth->bindParam(':data', $data, PDO::PARAM_LOB);
+    try {
+        $result = $sth->execute();
+    } catch (PDOException $e) {
+        sendResponse(array(
+            'error' => $e->getMessage(),
+            false
+        ));
+    }
+    $res['result'] = $result;
+    $res['rowsaffected'] = $sth->rowCount();
 }
 
-
-end:
-header('Content-Type: text/json');
-echo json_encode($res);
+sendResponse($res);

@@ -1,4 +1,4 @@
-<?php
+<?php defined('SESAM') or die('Direct access permitted');
 /*
 
     Copyright (c) 2015-2016 Oliver Lau <ola@ct.de>, Heise Medien GmbH & Co. KG
@@ -18,26 +18,15 @@
 
 */
 
-define('SESAM', true);
-require_once __DIR__ . '/../lib/base.php';
+return array(
+    'db_engine'     => 'sqlite',
+    'db_path'       => '/var/www/sqlite',
+    'db_name'       => 'ctSESAM-server.sqlite',
+    'db_persistent' => true,
+#    'db_engine'     => 'mysql',
+#    'db_host'       => 'localhost',
+#    'db_name'       => 'sesam',
+#    'db_user'       => 'sesam',
+#    'db_passwd'     => 'sesam'
+);
 
-assert_basic_auth();
-
-$res = array('userid' => $authenticated_user);
-
-if ($dbh) {
-    $sth = $dbh->prepare('SELECT * FROM `domains` WHERE `userid` = :userid');
-    $sth->bindParam(':userid', $authenticated_user, PDO::PARAM_STR);
-    $result = $sth->execute();
-    $r = $sth->fetch(PDO::FETCH_ASSOC);
-    if ($r) {
-        $res['result'] = $r['data'];
-    }
-} else {
-    sendResponse(array(
-        'error' => 'Connecting to database failed',
-        false
-    ));
-}
-
-sendResponse($res);

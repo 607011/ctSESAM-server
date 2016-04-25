@@ -1,4 +1,0 @@
-<IfModule mod_rewrite.c>
-RewriteEngine on
-RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization},last]
-</IfModule>
